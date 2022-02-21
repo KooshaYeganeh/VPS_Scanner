@@ -1,0 +1,82 @@
+#!/usr/bin/bash
+
+
+
+
+#Redhat Base
+
+install_clamav(){
+	sudo yum install epel-release
+	yum update && yum install clamd
+}
+
+install_maldet(){
+	wget http://www.rfxn.com/downloads/maldetect-current.tar.gz
+	tar -xvf maldetect-current.tar.gz
+	cd maldetect-1.6.4/
+	./install.sh
+}
+
+install_rkhunter(){
+	wget https://sourceforge.net/projects/rkhunter/files/latest/download
+	tar xzvf download
+	cd rkhunter*
+	sudo ./installer.sh --layout /usr --install
+	/usr/local/bin/rkhunter --update # update
+	/usr/local/bin/rkhunter --propupd # update
+}
+
+
+
+# Debian Base systems
+
+Debian(){
+	sudo apt update && apt-get install clamav clamav-daemon
+}
+
+
+debian_install_maldet(){
+	wget http://www.rfxn.com/downloads/maldetect-current.tar.gz
+	tar -xvf maldetect-current.tar.gz
+	cd maldetect-1.6.4/
+	./install.sh
+}
+
+debian_install_rkhunter(){
+	wget https://sourceforge.net/projects/rkhunter/files/latest/download
+	tar xzvf download
+	cd rkhunter*
+	sudo ./installer.sh --layout /usr --install
+	/usr/local/bin/rkhunter --update # update
+	/usr/local/bin/rkhunter --propupd # update
+}
+
+
+
+
+single(){
+	mkdir /home/clamav
+
+	clamdir=/home/clamav
+	if [ -d "$clamdir" ];then
+		mkdir /home/clamav/infected
+		infectdir=/home/clamav/infected
+		if [ -d "$infectdir" ];then
+			mkdir /home/clamav/infected/Report
+		fi
+	fi
+
+}
+
+
+
+multiple(){
+
+	sudo ansible hosts -m command -a "mkdir /home/clamav"
+	sudo ansible hosts -m command -a "mkdir /home/clamav/Infected"
+	sudo ansible hosts -m command -a "mkdir /home/clamav/report.txt"
+
+
+}
+
+
