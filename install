@@ -2,59 +2,75 @@
 
 
 
+<< basic
 
-#Redhat Base
+install basic apps for now and might be feature
 
-install_clamav(){
+basic
+
+basic_redhat(){
+	sudo dnf install wget
+	sudo dnf install curl
+	sudo dnf install git
+}
+
+basic_debian(){
+	sudo apt update
+	sudo apt install wget
+	sudo apt install curl
+	sudo apt install git
+}
+
+
+
+
+# Redhat Base
+
+clamav_redhat(){
 	sudo yum install epel-release
 	yum update && yum install clamd
 }
 
-install_maldet(){
+maldet(){
+	cd /opt
 	wget http://www.rfxn.com/downloads/maldetect-current.tar.gz
 	tar -xvf maldetect-current.tar.gz
 	cd maldetect-1.6.4/
 	./install.sh
+	cd
 }
 
-install_rkhunter(){
+rkhunter(){
+	cd /opt
 	wget https://sourceforge.net/projects/rkhunter/files/latest/download
 	tar xzvf download
 	cd rkhunter*
 	sudo ./installer.sh --layout /usr --install
 	/usr/local/bin/rkhunter --update # update
 	/usr/local/bin/rkhunter --propupd # update
+	cd
 }
 
 
 
 # Debian Base systems
 
-Debian(){
+debian_clamav(){
 	sudo apt update && apt-get install clamav clamav-daemon
 }
 
 
-debian_install_maldet(){
-	wget http://www.rfxn.com/downloads/maldetect-current.tar.gz
-	tar -xvf maldetect-current.tar.gz
-	cd maldetect-1.6.4/
-	./install.sh
-}
+<< make_direction 
 
-debian_install_rkhunter(){
-	wget https://sourceforge.net/projects/rkhunter/files/latest/download
-	tar xzvf download
-	cd rkhunter*
-	sudo ./installer.sh --layout /usr --install
-	/usr/local/bin/rkhunter --update # update
-	/usr/local/bin/rkhunter --propupd # update
-}
+Make Direction for clamav directories
+like report and Quarantine
+
+make_direction
 
 
 
+makedir(){
 
-single(){
 	mkdir /home/clamav
 
 	clamdir=/home/clamav
@@ -69,14 +85,133 @@ single(){
 }
 
 
-
-multiple(){
-
-	sudo ansible hosts -m command -a "mkdir /home/clamav"
-	sudo ansible hosts -m command -a "mkdir /home/clamav/Infected"
-	sudo ansible hosts -m command -a "mkdir /home/clamav/report.txt"
-
-
+multiple_basic_redhat(){
+	sudo ansible all -m command -a "sudo dnf install curl"
+	sudo ansible all -m command -a "sudo dnf install wget"
+	sudo ansible all -m command -a "sudo dnf install git"
 }
 
+
+
+multiple_basic_debian(){
+	sudo ansible all -m command -a "sudo apt update"
+	sudo ansible all -m command -a "sudo apt install curl"
+	sudo ansible all -m command -a "sudo apt install wget"
+	sudo ansible all -m command -a "sudo apt install git"
+}
+
+
+multiple_redhat(){
+
+<< clamAV
+	this part is install clamAV on all Servers with Ansible
+	clamAv is most Powerfull Av on Linux systems ...
+	
+clamAV
+
+	sudo ansible all -m command -a "sudo yum install epel-release"
+	sudo ansible all -m command -a "sudo yum update"
+	sudo ansible all -m command -a "sudo sum install clamd"
+	
+<< MalwareDetect
+	This part is Install malwaredetect on servers with Ansible
+	this help for clamav for better Result
+MalwareDetect
+
+	sudo ansible all -m command -a "cd /opt"
+	sudo ansible all -m command -a "wget http://www.rfxn.com/downloads/maldetect-current.tar.gz"
+	sudo ansible all -m command -a "tar -xvf maldetect-current.tar.gz"
+	sudo ansible all -m command -a "cd maldetect-1.6.4/"
+	sudo ansibel all -m command -a "./install.sh"
+	sudo ansible all -m command -a "cd"
+
+<< RKhunter
+	this part install Rkhunter aon Servers.this app help to
+	detect and remove rootlits
+RKhunter
+
+	
+	sudo ansible all -m command -a "cd /opt"
+	sudo ansible all -m command -a "wget https://sourceforge.net/projects/rkhunter/files/latest/download"
+	sudo ansible all -m command -a "tar xzvf download"
+	sudo ansible all -m command -a "cd rkhunter*"
+	sudo ansible all -m command -a "sudo ./installer.sh --layout /usr --install"
+	sudo ansible all -m command -a "/usr/local/bin/rkhunter --update"
+	sudo ansible all -m command -a "/usr/local/bin/rkhunter --propupd"
+	sudo ansible all -m command -a "cd"
+}
+
+multiple_debian(){
+
+<< clamAV
+	this part is install clamAV on all Servers with Ansible
+	clamAv is most Powerfull Av on Linux systems ...
+	
+clamAV
+	
+	sudo ansible all -m command -a "sudo apt update"
+	sudo ansible all -m command -a "sudo apt upgrade -y"
+	sudo ansible all -m command -a "sudo apt-get install clamav clamav-daemon"
+	
+<< MalwareDetect
+	This part is Install malwaredetect on servers with Ansible
+	this help for clamav for better Result
+MalwareDetect
+
+	sudo ansible all -m command -a "cd /opt"
+	sudo ansible all -m command -a "wget http://www.rfxn.com/downloads/maldetect-current.tar.gz"
+	sudo ansible all -m command -a "tar -xvf maldetect-current.tar.gz"
+	sudo ansible all -m command -a "cd maldetect-1.6.4/"
+	sudo ansibel all -m command -a "./install.sh"
+	sudo ansible all -m command -a "cd"
+
+<< RKhunter
+	this part install Rkhunter aon Servers.this app help to
+	detect and remove rootlits
+RKhunter
+
+	
+	sudo ansible all -m command -a "cd /opt"
+	sudo ansible all -m command -a "wget https://sourceforge.net/projects/rkhunter/files/latest/download"
+	sudo ansible all -m command -a "tar xzvf download"
+	sudo ansible all -m command -a "cd rkhunter*"
+	sudo ansible all -m command -a "sudo ./installer.sh --layout /usr --install"
+	sudo ansible all -m command -a "/usr/local/bin/rkhunter --update"
+	sudo ansible all -m command -a "/usr/local/bin/rkhunter --propupd"
+	sudo ansible all -m command -a "cd"
+}	
+
+menu(){
+
+	echo "Your System is RedHat based or Debian Based?[r(RedHat)/d(debian)]"
+	read os
+	echo "Run Installer on multiple Server or one?[m(multiple)/s(single)]"
+	read num
+	if [ "$os" = r ] && [ "$num" = s ];then
+		basic_redhat
+		clamav_redhat
+		maldet
+		rkhunter
+	elif [ "$os" = d ] && [ "$num" = s ];then
+		basic_debian
+		debian_clamav
+		maldet
+		rkhunter
+	elif [ "$os" = r ] && [ "$num" = m ];then
+		multiple_basic_redhat
+		multiple_redhat
+	elif [ "$os" = d ] && [ "$num" = m ];then
+		multiple_basic_debian
+		multiple_debian
+	fi
+	}
+
+
+menu
+
+
+if $menu;then
+	mv vps_scanner /usr/bin
+	echo "complete"
+fi
 
